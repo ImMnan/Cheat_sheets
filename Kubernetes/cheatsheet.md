@@ -13,7 +13,7 @@ card:
 
 <!-- overview -->
 
-This page contains a list of commonly used `kubectl` commands and flags.
+This page contains a list of commonly used `kubectl` cmds and flags.
 
 <!-- body -->
 
@@ -37,7 +37,7 @@ complete -o default -F __start_kubectl k
 
 ```bash
 source <(kubectl completion zsh)  # set up autocomplete in zsh into the current shell
-echo '[[ $commands[kubectl] ]] && source <(kubectl completion zsh)' >> ~/.zshrc # add autocomplete permanently to your zsh shell
+echo '[[ $cmds[kubectl] ]] && source <(kubectl completion zsh)' >> ~/.zshrc # add autocomplete permanently to your zsh shell
 ```
 ### A note on `--all-namespaces`
 
@@ -76,7 +76,7 @@ kubectl config set-cluster my-cluster-name --proxy-url=my-proxy-url
 # add a new user to your kubeconf that supports basic auth
 kubectl config set-credentials kubeuser/foo.kubernetes.com --username=kubeuser --password=kubepassword
 
-# permanently save the namespace for all subsequent kubectl commands in that context.
+# permanently save the namespace for all subsequent kubectl cmds in that context.
 kubectl config set-context --current --namespace=ggckad-s2
 
 # set a context utilizing a specific username and namespace.
@@ -166,7 +166,7 @@ kubectl get nodes -w                         # Watch the nodes
 kubectl get nodes -o wide                    # wide view along with the IP(internal/external), OS-image, Kernerl, Container-runtime
 kubectl get nodes -o yaml                    # Prints out the yaml manifests including detailed node information
 kubectl get nodes --show-labels              # Show all labels associated with the nodes
-kubectl top nodes <node_name>                # The top-node command allows you to see the resource consumption of nodes.
+kubectl top nodes <node_name>                # The top-node cmd allows you to see the resource consumption of nodes.
 ```
 
 ### Pods - Resource type [CRUD]
@@ -181,17 +181,17 @@ kubectl get pods -w                           # watch the all  pods, we can watc
 kubectl logs <pod_name>                       # Return snapshot logs from pod <pod_name> with only one container
 kubectl logs <pod_name> --all-container=true  # Return snapshot logs from pod <pod_name> with multi-container
 kubectl logs -c <container> <pod_name>        # Return snapshot logs for <container> in the pod <pod_name>
-kubectl logs -f <pod_name>                    # Begin streaming the logs, use -f with other commands as well when straming is needed.
-kubectl top pods <pod_name>                   # The top command allows you to see the resource [cpu/memory] consumption.
+kubectl logs -f <pod_name>                    # Begin streaming the logs, use -f with other cmds as well when straming is needed.
+kubectl top pods <pod_name>                   # The top cmd allows you to see the resource [cpu/memory] consumption.
 kubectl set env pods --all --list             # List the environment variables defined on all pods
 kubectl set env pods <pod_name> --list        # List the environment variables defined on a specific pod
 ```
 - Create + Update:
 
-Note: below commands are for default namespace, please specify your namespace as required (see further filtering).
+Note: below cmds are for default namespace, please specify your namespace as required (see further filtering).
 ```bash
-kubectl exec <pod_name> -- <command>                     # run a command on a container - pod with single container
-kubectl exec <pod_name> -c <container> -- <command>      # run a command on a specific container - pod with multi-container
+kubectl exec <pod_name> -- <cmd>                         # run a cmd on a container - pod with single container
+kubectl exec <pod_name> -c <container> -- <cmd>          # run a cmd on a specific container - pod with multi-container
 kubectl edit pod <pod_name>                              # Edit the existing pod's yaml
 kubectl label pod <pod_name> <key1>=<value1>             # Update pod <pod_name> with the label.
 kubectl label --overwrite pod <pod_name> <key1>=<value2> # Update pod <pod_name> with the label, overwriting any existing value
@@ -200,6 +200,7 @@ kubectl cp /tmp/foo_dir <pod_name>:/tmp/bar_dir          # Copy /tmp/foo_dir loc
 kubectl cp <namespace>/<pod_name>:/tmp/foo /tmp/bar      # Copy /tmp/foo from a remote pod to /tmp/bar locally
 kubectl set image pod/<pod_name> nginx=nginx:latest      # Update existing container image of a pod, nginx is a container-name, followed by image:version
 kubectl set image pod/<pod_name> *=nginx:latest          # Update all containers of this pod, nginx is a container-name, followed by image:version
+kubectl annotate pods <pod_name> description='test'      # Update pod <pod_name> with the annotation 'description' and the value as 'test'
 ```
 
 -  Delete:
@@ -210,10 +211,10 @@ kubectl label pod <pod_name> <key1>-        # Remove a label named <key1> if it 
 
 > Further fitering options [ -A, -n, -l ] with examples:
 
-These options can be used with the above commands as and when required.
+These options can be used with the above cmds as and when required.
 ```bash
 kubectl get pods -A                     # Lister pods across all namespaces.
-kubectl get pods -n <namespace>         # Using namespace, we can use -n with all other commands to point to resources in a specific namespace.
+kubectl get pods -n <namespace>         # Using namespace, we can use -n with all other cmds to point to resources in a specific namespace.
 kubectl get pods -l <key1>=<value1>     # Using labels key1=value1 are the labels,  Matching objects must satisfy all of the specified label constraints
 kubectl logs <pod_name> --tail=-1:      # Tail the log lines of recent log file to display.
 ```
@@ -230,17 +231,23 @@ kubectl get deploy --show-labels                # Show all labels associated wit
 kubectl get deploy -w                           # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
 ```
 
+- Create + Update:
+```bash
+kubectl exec deploy/<deploy_name> -- <cmd>                # Run a cmd on the 1st pod of the deployment, 1st container by default is used.
+kubectl exec deploy/<deploy_name> -c nginx -- <cmd>       # Run a cmd on nginx container in the deployment <deploy_name>
+kubectl edit deploy <deploy_name>                         # Edit the existing deployment's yaml
+kubectl annotate deploy <deploy_name> description='test'  # Update deploy with the annotation 'description' and the value as 'test'
+```
 
-
-
-
-
-
-
+-  Delete:
+```bash
+kubectl delete deploy  <deploy_name>              # Deletes the deployment
+kubectl label deploy <deploy_name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
+```
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
-# Get commands with basic output
+# Get cmds with basic output
 kubectl get services                          # List all services in the namespace
 kubectl get pods --all-namespaces             # List all pods in all namespaces
 kubectl get pods -o wide                      # List all pods in the current namespace, with more details
@@ -248,7 +255,7 @@ kubectl get deployment my-dep                 # List a particular deployment
 kubectl get pods                              # List all pods in the namespace
 kubectl get pod my-pod -o yaml                # Get a pod's YAML
 
-# Describe commands with verbose output
+# Describe cmds with verbose output
 kubectl describe nodes my-node
 kubectl describe pods my-pod
 
@@ -283,7 +290,7 @@ kubectl get pods --field-selector=status.phase=Running
 kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
 
 # List Names of Pods that belong to Particular RC
-# "jq" command useful for transformations that are too complex for jsonpath, it can be found at https://stedolan.github.io/jq/
+# "jq" cmd useful for transformations that are too complex for jsonpath, it can be found at https://stedolan.github.io/jq/
 sel=${$(kubectl get rc my-rc --output=json | jq -j '.spec.selector | to_entries | .[] | "\(.key)=\(.value),"')%?}
 echo $(kubectl get pods --selector=$sel --output=jsonpath={.items..metadata.name})
 
@@ -320,8 +327,8 @@ kubectl get nodes -o json | jq -c 'paths|join(".")'
 # Produce a period-delimited tree of all keys returned for pods, etc
 kubectl get pods -o json | jq -c 'paths|join(".")'
 
-# Produce ENV for all pods, assuming you have a default container for the pods, default namespace and the `env` command is supported.
-# Helpful when running any supported command across all pods, not just `env`
+# Produce ENV for all pods, assuming you have a default container for the pods, default namespace and the `env` cmd is supported.
+# Helpful when running any supported cmd across all pods, not just `env`
 for pod in $(kubectl get po --output=jsonpath={.items..metadata.name}); do echo $pod && kubectl exec -it $pod -- env; done
 
 # Get a deployment's status subresource
@@ -426,9 +433,9 @@ kubectl run nginx --image=nginx --dry-run=client -o yaml > pod.yaml
                                                     # Generate spec for running pod nginx and write it into a file called pod.yaml
 kubectl attach my-pod -i                            # Attach to Running Container
 kubectl port-forward my-pod 5000:6000               # Listen on port 5000 on the local machine and forward to port 6000 on my-pod
-kubectl exec my-pod -- ls /                         # Run command in existing pod (1 container case)
+kubectl exec my-pod -- ls /                         # Run cmd in existing pod (1 container case)
 kubectl exec --stdin --tty my-pod -- /bin/sh        # Interactive shell access to a running pod (1 container case)
-kubectl exec my-pod -c my-container -- ls /         # Run command in existing pod (multi-container case)
+kubectl exec my-pod -c my-container -- ls /         # Run cmd in existing pod (multi-container case)
 kubectl top pod POD_NAME --containers               # Show metrics for a given pod and its containers
 kubectl top pod POD_NAME --sort-by=cpu              # Show metrics for a given pod and sort it by 'cpu' or 'memory'
 ```
@@ -460,7 +467,7 @@ kubectl port-forward svc/my-service 5000                  # listen on local port
 kubectl port-forward svc/my-service 5000:my-service-port  # listen on local port 5000 and forward to Service target port with name <my-service-port>
 
 kubectl port-forward deploy/my-deployment 5000:6000       # listen on local port 5000 and forward to port 6000 on a Pod created by <my-deployment>
-kubectl exec deploy/my-deployment -- ls                   # run command in first Pod and first container in Deployment (single- or multi-container cases)
+kubectl exec deploy/my-deployment -- ls                   # run cmd in first Pod and first container in Deployment (single- or multi-container cases)
 ```
 
 ## Interacting with Nodes and cluster
@@ -502,7 +509,7 @@ kubectl api-resources --api-group=extensions # All resources in the "extensions"
 
 ### Formatting output
 
-To output details to your terminal window in a specific format, add the `-o` (or `--output`) flag to a supported `kubectl` command.
+To output details to your terminal window in a specific format, add the `-o` (or `--output`) flag to a supported `kubectl` cmd.
 
 Output format | Description
 --------------| -----------
