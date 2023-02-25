@@ -219,18 +219,20 @@ kubectl get pods -l <key1>=<value1>     # Using labels key1=value1 are the label
 kubectl logs <pod_name> --tail=5:      # Tail the log lines of recent log file to display.
 ```
 
-### Deployment - Resource type [CRUD]
+### Deployment + Replica Set - Resource type [CRUD]
 
 - Read:
 ```bash
-kubectl get deploy                              # List all deployment  in the default namespace
-kubectl get deploy -o wide                      # List the deployment in a wide view - [Containers, Images, Selector]
-kubectl get deploy <deploy_name> -o yaml        # Get a deployment's YAML
-kubectl describe deploy <deploy_name>           # Describe the deployment details
-kubectl get deploy --show-labels                # Show all labels associated with the deployment
-kubectl get deploy -w                           # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
-kubectl rollout history deploy/<deploy_name>    # View the rollout history of a deployment
-kubectl rollout status deploy/<deploy_name>     # Check the status of your rollout.
+kubectl get deploy                                # List all deployment  in the default namespace
+kubectl get deploy -o wide                        # List the deployment in a wide view - [Containers, Images, Selector]
+kubectl get deploy <deploy_name> -o yaml          # Get a deployment's YAML
+kubectl describe deploy <deploy_name>             # Describe the deployment details
+kubectl get deploy --show-labels                  # Show all labels associated with the deployment
+kubectl get deploy -w                             # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
+kubectl rollout history deploy/<deploy_name>      # View the rollout history of a deployment
+kubectl rollout status deploy/<deploy_name>       # Check the status of your rollout.
+kubectl set env deploy --all --list               # List the environment variables defined on all deployment
+kubectl set env deploy/<deploy_name> --all --list # List the environment variables defined on all deployment
 ```
 
 - Create + Update:
@@ -243,6 +245,10 @@ kubectl label --overwrite deploy/<deploy_name> <key>=<value2> # Update <deploy_n
 kubectl rollout undo deploy/<deploy_name>                     # Rollback to the previous deployment.
 kubectl rollout undo deploy/<deploy_name> --to-revision=2     # Rollback to revision 2 of from the  previous deployment history
 kubectl rollout restart deploy/<deploy_name>                  # Restart a deployment
+kubectl rollout pause deploy/<deploy_name>                    # New updates to the deployment will not have an effect as long as this is paused
+kubectl rollout resume deploy/<deploy_name>                   # Resume an already paused deployment
+kubectl scale --replicas=3 deploy/<deploy_name>               # Scale a replica set to 3, can scale up or down
+
 kubectl annotate deploy <deploy_name> description='test'      # Added nnotation, though we recommend adding these in the yaml for deployment.
 kubectl autoscale deploy/<deploy_name> --min=2 --max=5 --cpu-percent=50 # Auto scalling - though we recommend creating a yaml for autoscaling.
 ```
