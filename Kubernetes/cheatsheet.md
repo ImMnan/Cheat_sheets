@@ -216,7 +216,7 @@ These options can be used with the above cmds as and when required.
 kubectl get pods -A                     # Lister pods across all namespaces.
 kubectl get pods -n <namespace>         # Using namespace, we can use -n with all other cmds to point to resources in a specific namespace.
 kubectl get pods -l <key1>=<value1>     # Using labels key1=value1 are the labels,  Matching objects must satisfy all of the specified label constraints
-kubectl logs <pod_name> --tail=-1:      # Tail the log lines of recent log file to display.
+kubectl logs <pod_name> --tail=5:      # Tail the log lines of recent log file to display.
 ```
 
 ### Deployment - Resource type [CRUD]
@@ -229,14 +229,32 @@ kubectl get deploy <deploy_name> -o yaml        # Get a deployment's YAML
 kubectl describe deploy <deploy_name>           # Describe the deployment details
 kubectl get deploy --show-labels                # Show all labels associated with the deployment
 kubectl get deploy -w                           # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
+kubectl rollout history deploy/<deploy_name>    # View the rollout history of a deployment
+kubectl rollout status deploy/<deploy_name>     # Check the status of your rollout.
 ```
 
 - Create + Update:
 ```bash
-kubectl exec deploy/<deploy_name> -- <cmd>                # Run a cmd on the 1st pod of the deployment, 1st container by default is used.
-kubectl exec deploy/<deploy_name> -c nginx -- <cmd>       # Run a cmd on nginx container in the deployment <deploy_name>
-kubectl edit deploy <deploy_name>                         # Edit the existing deployment's yaml
-kubectl annotate deploy <deploy_name> description='test'  # Update deploy with the annotation 'description' and the value as 'test'
+kubectl exec deploy/<deploy_name> -- <cmd>                    # Run a cmd on the 1st pod of the deployment, 1st container by default is used.
+kubectl exec deploy/<deploy_name> -c nginx -- <cmd>           # Run a cmd on nginx container in the deployment <deploy_name>
+kubectl edit deploy <deploy_name>                             # Edit the existing deployment's yaml
+kubectl label deploy/<deploy_name> <key>=<value>              # Update <deploy_name> with the label.
+kubectl label --overwrite deploy/<deploy_name> <key>=<value2> # Update <deploy_name> with the label, overwriting any existing value
+kubectl rollout undo deploy/<deploy_name>                     # Rollback to the previous deployment.
+kubectl rollout undo deploy/<deploy_name> --to-revision=2     # Rollback to revision 2 of from the  previous deployment history
+kubectl rollout restart deploy/<deploy_name>                  # Restart a deployment
+kubectl annotate deploy <deploy_name> description='test'      # Added nnotation, though we recommend adding these in the yaml for deployment.
+kubectl autoscale deploy/<deploy_name> --min=2 --max=5 --cpu-percent=50 # Auto scalling - though we recommend creating a yaml for autoscaling.
+```
+
+> Further fitering options [ -A, -n, -l ] with examples:
+
+These options can be used with the above cmds as and when required.
+```bash
+kubectl get deploy -A                            # Lister Deployments  across all namespaces.
+kubectl get deploy -n <namespace>                # Using namespace, we can use -n with all other cmds to point to resources in a specific namespace.
+kubectl get deploy -l <key1>=<value1>            # Using labels key1=value1, matching objects must satisfy all of the specified label constraints
+kubectl logs -f deploy/<deploy_name> --tail=5:   # Tail the log lines of recent log file to display.
 ```
 
 -  Delete:
@@ -245,7 +263,7 @@ kubectl delete deploy  <deploy_name>              # Deletes the deployment
 kubectl label deploy <deploy_name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
 ```
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------
 ```
 # Get cmds with basic output
 kubectl get services                          # List all services in the namespace
