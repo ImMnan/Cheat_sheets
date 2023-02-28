@@ -182,6 +182,7 @@ kubectl logs <pod_name>                       # Return snapshot logs from pod <p
 kubectl logs <pod_name> --all-container=true  # Return snapshot logs from pod <pod_name> with multi-container
 kubectl logs -c <container> <pod_name>        # Return snapshot logs for <container> in the pod <pod_name>
 kubectl logs -f <pod_name>                    # Begin streaming the logs, use -f with other cmds as well when straming is needed.
+kubectl logs -f <pod_name> --tail=5:          # Tail the log lines of recent log file to display.
 kubectl top pods <pod_name>                   # The top cmd allows you to see the resource [cpu/memory] consumption.
 kubectl set env pods --all --list             # List the environment variables defined on all pods
 kubectl set env pods <pod_name> --list        # List the environment variables defined on a specific pod
@@ -201,6 +202,8 @@ kubectl cp <namespace>/<pod_name>:/tmp/foo /tmp/bar      # Copy /tmp/foo from a 
 kubectl set image pod/<pod_name> nginx=nginx:latest      # Update existing container image of a pod, nginx is a container-name, followed by image:version
 kubectl set image pod/<pod_name> *=nginx:latest          # Update all containers of this pod, nginx is a container-name, followed by image:version
 kubectl annotate pods <pod_name> description='test'      # Update pod <pod_name> with the annotation 'description' and the value as 'test'
+kubectl attach <pod_name>                                # Get output from running pod
+kubectl attach <pod_name> -c <container_name>            # Get output from a container in a running pod
 ```
 
 -  Delete:
@@ -216,41 +219,54 @@ These options can be used with the above cmds as and when required.
 kubectl get pods -A                     # Lister pods across all namespaces.
 kubectl get pods -n <namespace>         # Using namespace, we can use -n with all other cmds to point to resources in a specific namespace.
 kubectl get pods -l <key1>=<value1>     # Using labels key1=value1 are the labels,  Matching objects must satisfy all of the specified label constraints
-kubectl logs <pod_name> --tail=5:      # Tail the log lines of recent log file to display.
 ```
 
 ### Deployment + Replica Set - Resource type [CRUD]
 
 - Read:
 ```bash
-kubectl get deploy                                # List all deployment  in the default namespace
-kubectl get deploy -o wide                        # List the deployment in a wide view - [Containers, Images, Selector]
-kubectl get deploy <deploy_name> -o yaml          # Get a deployment's YAML
-kubectl describe deploy <deploy_name>             # Describe the deployment details
-kubectl get deploy --show-labels                  # Show all labels associated with the deployment
-kubectl get deploy -w                             # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
-kubectl rollout history deploy/<deploy_name>      # View the rollout history of a deployment
-kubectl rollout status deploy/<deploy_name>       # Check the status of your rollout.
-kubectl set env deploy --all --list               # List the environment variables defined on all deployment
-kubectl set env deploy/<deploy_name> --all --list # List the environment variables defined on all deployment
+kubectl get deploy                         # List all deployment  in the default namespace
+kubectl get deploy -o wide                 # List the deployment in a wide view - [Containers, Images, Selector]
+kubectl get deploy <name> -o yaml          # Get a deployment's YAML
+kubectl describe deploy <name>             # Describe the deployment details
+kubectl get deploy --show-labels           # Show all labels associated with the deployment
+kubectl get deploy -w                      # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
+kubectl rollout history deploy/<name>      # View the rollout history of a deployment
+kubectl rollout status deploy/<name>       # Check the status of your rollout.
+kubectl set env deploy --all --list        # List the environment variables defined on all deployment
+kubectl set env deploy/<name> --list       # List the environment variables defined on all deployment
+kubectl logs -f deploy/<name> --tail=5:    # Tail the log lines of recent log file to display.
 ```
 
 - Create + Update:
 ```bash
-kubectl exec deploy/<deploy_name> -- <cmd>                    # Run a cmd on the 1st pod of the deployment, 1st container by default is used.
-kubectl exec deploy/<deploy_name> -c nginx -- <cmd>           # Run a cmd on nginx container in the deployment <deploy_name>
-kubectl edit deploy <deploy_name>                             # Edit the existing deployment's yaml
-kubectl label deploy/<deploy_name> <key>=<value>              # Update <deploy_name> with the label.
-kubectl label --overwrite deploy/<deploy_name> <key>=<value2> # Update <deploy_name> with the label, overwriting any existing value
-kubectl rollout undo deploy/<deploy_name>                     # Rollback to the previous deployment.
-kubectl rollout undo deploy/<deploy_name> --to-revision=2     # Rollback to revision 2 of from the  previous deployment history
-kubectl rollout restart deploy/<deploy_name>                  # Restart a deployment
-kubectl rollout pause deploy/<deploy_name>                    # New updates to the deployment will not have an effect as long as this is paused
-kubectl rollout resume deploy/<deploy_name>                   # Resume an already paused deployment
-kubectl scale --replicas=3 deploy/<deploy_name>               # Scale a replica set to 3, can scale up or down
+kubectl exec deploy/<name> -- <cmd>                          # Run a cmd on the 1st pod of the deployment, 1st container by default is used.
+kubectl exec deploy/<name> -c nginx -- <cmd>                 # Run a cmd on nginx container in the deployment <name>
+kubectl edit deploy <name>                                   # Edit the existing deployment's yaml
+kubectl label deploy/<name> <key>=<value>                    # Update <name> with the label.
+kubectl label --overwrite deploy/<name> <key>=<value2>       # Update <name> with the label, overwriting any existing value
+kubectl rollout undo deploy/<name>                           # Rollback to the previous deployment.
+kubectl rollout undo deploy/<name> --to-revision=2           # Rollback to revision 2 of from the  previous deployment history
+kubectl rollout restart deploy/<name>                        # Restart a deployment
+kubectl rollout pause deploy/<name>                          # New updates to the deployment will not have an effect as long as this is paused
+kubectl rollout resume deploy/<name>                         # Resume an already paused deployment
+kubectl set env deploy/<name> env_var=test                   # Update deployment with a new env name 'env_var'='test'
+kubectl set env --from=configmap/<name> deploy/<name>        # Import environment from a configmap 
+kubectl set env --from=secret/<name> deploy/<name>           # Import environment from a secret
+kubectl set image deploy/<name> nginx=nginx:latest           # Set a deployment's nginx container image to 'nginx:latest'
+kubectl set image deploy/<name> *=nginx:1.14.2               # Update image of all containers of deployment to 'nginx:1.14.2'
+kubectl set resources deploy/<name> -c nginx --limits=cpu=250m,memory=512Mi   # Set a deployments nginx container cpu limits to "200m" and memory to "512Mi" 
+kubectl set resources deploy/<name> -c nginx --requests=cpu=250m,memory=512Mi # Set a deployments nginx container cpu requests to "200m" and memory to "512Mi" 
+kubectl scale --replicas=3 deploy/<name>                     # Scale a replica set to 3, can scal̥le up or down
+kubectl annotate deploy <name> description='test'            # Added nnotation, though we recommend adding these in the yaml for deployment.
+kubectl autoscale deploy/<name> --min=2 --max=5 --cpu-percent=50              # Auto scalling - though we recommend creating a yaml for autoscaling.
+kubectl attach deploy/<name>                                 # Get output from the first pod of a deployment
+```
 
-kubectl annotate deploy <deploy_name> description='test'      # Added nnotation, though we recommend adding these in the yaml for deployment.
-kubectl autoscale deploy/<deploy_name> --min=2 --max=5 --cpu-percent=50 # Auto scalling - though we recommend creating a yaml for autoscaling.
+-  Delete:
+```bash
+kubectl delete deploy  <name>              # Deletes the deployment
+kubectl label deploy <name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
 ```
 
 > Further fitering options [ -A, -n, -l ] with examples:
@@ -260,13 +276,6 @@ These options can be used with the above cmds as and when required.
 kubectl get deploy -A                            # Lister Deployments  across all namespaces.
 kubectl get deploy -n <namespace>                # Using namespace, we can use -n with all other cmds to point to resources in a specific namespace.
 kubectl get deploy -l <key1>=<value1>            # Using labels key1=value1, matching objects must satisfy all of the specified label constraints
-kubectl logs -f deploy/<deploy_name> --tail=5:   # Tail the log lines of recent log file to display.
-```
-
--  Delete:
-```bash
-kubectl delete deploy  <deploy_name>              # Deletes the deployment
-kubectl label deploy <deploy_name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
 ```
 
 ---------------------------------------------------------------------------------------------------------------------------------------
