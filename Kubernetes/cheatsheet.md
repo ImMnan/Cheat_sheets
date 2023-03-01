@@ -236,6 +236,7 @@ kubectl rollout status deploy/<name>       # Check the status of your rollout.
 kubectl set env deploy --all --list        # List the environment variables defined on all deployment
 kubectl set env deploy/<name> --list       # List the environment variables defined on all deployment
 kubectl logs -f deploy/<name> --tail=5:    # Tail the log lines of recent log file to display.
+kubectl logs deploy/name -c nginx
 ```
 
 - Create + Update:
