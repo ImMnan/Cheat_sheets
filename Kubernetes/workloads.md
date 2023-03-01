@@ -1,6 +1,7 @@
 # Workloads
 Workloads Kubernetes Objects - apiVersion, Kind, metadata, and Spec.
 
+-----------------------------------------------------------------
 ## Pod
 
 ```bash
@@ -102,5 +103,73 @@ spec:
           protocol: TCP
 ```
 
+In the master node:
+```bash
+kubeclt get pods -A
+```
+The pod will appear in default namespace, delete the static pod file in worker01
+Run the following in the master node:
+```bash
+kubectl get pods -A
+```
+The pod will Disappear in default namespace
 
 
+### Resource limits
+
+Set resource limits or requests for a pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rl-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+    resources:
+      requests: # Minimum Value        
+        memory: "100Mi"
+        cpu: "250m" # 1 core = 1000m
+      limits:  # Maximum Value         
+        memory: "128Mi"
+        cpu: "300m"
+```
+------------------------------------------------------------------------------------------------------------
+## Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
+
+```bash
+kubectl get deployments
+kubectl rollout status deployment/nginx-deployment
+kubectl get rs
+kubectl get pods --show-labels
+```
+
+Checkout [cheatsheet](cheatsheet.md) to know more about the commands that can be run to manage the deployment.
