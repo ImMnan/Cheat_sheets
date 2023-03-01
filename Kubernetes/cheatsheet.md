@@ -94,7 +94,7 @@ alias kn='f() { [ "$1" ] && kubectl config set-context --current --namespace $1 
 
 `apply` manages applications through files defining Kubernetes resources. It creates and updates resources in a cluster through running `kubectl apply`. This is the recommended way of managing Kubernetes applications on production. See [Kubectl Book](https://kubectl.docs.kubernetes.io).
 
-## Creating objects
+### Creating objects
 
 Kubernetes manifests can be defined in YAML or JSON. The file extension `.yaml`,
 `.yml`, and `.json` can be used.
@@ -228,14 +228,6 @@ kubectl delete pod <pod_name>               # Deletes the pod
 kubectl label pod <pod_name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
 ```
 
-> Further fitering options [ -A, -n, -l ] with examples:
-
-These options can be used with the above cmds as and when required.
-```bash
-kubectl get pods -A                     # Lister pods across all namespaces.
-kubectl get pods -n <namespace>         # Using namespace, we can use -n with all other cmds to point to resources in a specific namespace.
-kubectl get pods -l <key1>=<value1>     # Using labels key1=value1 are the labels,  Matching objects must satisfy all of the specified label constraints
-```
 
 ### Deployment + Replica Set - Resource type [CRUD]
 
@@ -287,34 +279,7 @@ kubectl delete deploy  <name>              # Deletes the deployment
 kubectl label deploy <name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
 ```
 
-> Further fitering options [ -A, -n, -l ] with examples:
-
-These options can be used with the above cmds as and when required.
-```bash
-kubectl get deploy -A                            # Lister Deployments  across all namespaces.
-kubectl get deploy -n <namespace>                # Using namespace, we can use -n with all other cmds to point to resources in a specific namespace.
-kubectl get deploy -l <key1>=<value1>            # Using labels key1=value1, matching objects must satisfy all of the specified label constraints
-```
-
 ---------------------------------------------------------------------------------------------------------------------------------------
-
-## Interacting with Nodes and cluster
-
-```bash
-kubectl cordon my-node                                                # Mark my-node as unschedulable
-kubectl drain my-node                                                 # Drain my-node in preparation for maintenance
-kubectl uncordon my-node                                              # Mark my-node as schedulable
-kubectl top node my-node                                              # Show metrics for a given node
-kubectl cluster-info                                                  # Display addresses of the master and services
-kubectl cluster-info dump                                             # Dump current cluster state to stdout
-kubectl cluster-info dump --output-directory=/path/to/cluster-state   # Dump current cluster state to /path/to/cluster-state
-
-# View existing taints on which exist on current nodes.
-kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'
-
-# If a taint with that key and effect already exists, its value is replaced as specified.
-kubectl taint nodes foo dedicated=special-user:NoSchedule
-```
 
 ### Resource types
 
