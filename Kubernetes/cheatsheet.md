@@ -280,7 +280,6 @@ kubectl get deploy -l <key1>=<value1>            # Using labels key1=value1, mat
 ```
 
 ---------------------------------------------------------------------------------------------------------------------------------------
-```
 
 ## Interacting with Nodes and cluster
 
