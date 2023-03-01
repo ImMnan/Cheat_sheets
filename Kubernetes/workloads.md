@@ -10,6 +10,9 @@ kubectl api-resources
 kubectl explain pod.spec.containers
 kubectl explain pod.spec.containers [--]recursive
 ```
+Checkout [cheatsheet](cheatsheet.md) to know more about the commands that can be run to manage the pods.
+Navigate to the pods section to get details about deployment commands.
+
 
 ### One-container-per-Pod
 ```yaml
@@ -138,6 +141,8 @@ spec:
         memory: "128Mi"
         cpu: "300m"
 ```
+
+
 ------------------------------------------------------------------------------------------------------------
 ## Deployment
 
@@ -173,3 +178,4 @@ kubectl get pods --show-labels
 ```
 
 Checkout [cheatsheet](cheatsheet.md) to know more about the commands that can be run to manage the deployment.
+Navigate to the Deployment section to get details about deployment commands.
