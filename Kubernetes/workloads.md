@@ -87,6 +87,7 @@ kubectl get pods -w
 cd /etc/kubernetes/manifests
 ls -l
 ```
+Any manifest placed into this directory will be owned by kubelet and it will run the manifests. Any changes made to the maifest yamls in this directory will be real time, no restarts needed.
 
 create a yaml file:
 ```yaml
