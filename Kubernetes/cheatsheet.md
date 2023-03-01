@@ -158,8 +158,9 @@ EOF
 
 ## Viewing/listing/updating and deleting  resources [CRUD]
 
-### Node - Resource type
+### Node & cluster
 
+- Read:
 ```bash
 kubectl get nodes                            # List all nodes in the cluster
 kubectl get nodes -w                         # Watch the nodes
@@ -167,6 +168,21 @@ kubectl get nodes -o wide                    # wide view along with the IP(inter
 kubectl get nodes -o yaml                    # Prints out the yaml manifests including detailed node information
 kubectl get nodes --show-labels              # Show all labels associated with the nodes
 kubectl top nodes <node_name>                # The top-node cmd allows you to see the resource consumption of nodes.
+kubectl cluster-info                                                  # Display addresses of the master and services
+kubectl cluster-info dump                                             # Dump current cluster state to stdout
+kubectl cluster-info dump --output-directory=/path/to/cluster-state   # Dump current cluster state to /path/to/cluster-state
+
+# View existing taints on which exist on current nodes.
+kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'
+```
+- Update:
+```bash
+kubectl cordon <node_name>                   # Mark the node as unschedulable
+kubectl drain <node_name>                    # Drain node in preparation for maintenance
+kubectl uncordon <node_name>                 # Mark node as schedulable
+
+# If a taint with that key and effect already exists, its value is replaced as specified.
+kubectl taint nodes foo dedicated=special-user:NoSchedule
 ```
 
 ### Pods - Resource type [CRUD]
@@ -369,7 +385,7 @@ Verbosity | Description
 `--v=8` | Display HTTP request contents.
 `--v=9` | Display HTTP request contents without truncation of contents.
 
-## {{% heading "whatsnext" %}}
+## What's next
 
 * Read the [kubectl overview](/docs/reference/kubectl/) and learn about [JsonPath](/docs/reference/kubectl/jsonpath).
 
