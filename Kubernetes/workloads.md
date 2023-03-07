@@ -180,3 +180,236 @@ kubectl get pods --show-labels
 
 Checkout [cheatsheet](cheatsheet.md) to know more about the commands that can be run to manage the deployment.
 Navigate to the Deployment section to get details about deployment commands.
+
+
+## Daemon Set
+
+
+
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-elasticsearch
+  namespace: kube-system
+  labels:
+    k8s-app: fluentd-logging
+spec:
+  selector:
+    matchLabels:
+      name: fluentd-elasticsearch
+  template:
+    metadata:
+      labels:
+        name: fluentd-elasticsearch
+    spec:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: fluentd-elasticsearch
+        image: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+```
+For complete Commands for daemonset see [cheatsheet](cheatsheet.md)
+```bash
+kubectl apply -f https://k8s.io/examples/controllers/daemonset.yaml
+kubectl get ds
+kubectl describe ds fluentd-elasticsearch
+kubectl get pods -o wide | grep fluentd
+```
+
+## Jobs
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: busybox:1.28
+        imagePullPolicy: IfNotPresent
+        command:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+      restartPolicy: Never
+  backoffLimit: 4
+```
+```bash
+kubectl apply -f job.yaml 
+kubectl describe jobs/pi pods=$(kubectl get pods --selector=job-name=pi --output=jsonpath='{.items[*].metadata.name}')
+echo $pods 
+kubectl logs $pods
+```
+
+## CronJobs
+```bash
+wget https://k8s.io/examples/application/job/cronjob.yaml
+Note: Change version in yaml
+kubectl create -f cronjob.yaml
+kubectl get cronjob hello
+kubectl get jobs -w
+kubectl delete -f cronjob.yaml
+```
+
+Configuration basics
+
+Introduction:
+All JAVA Spring Configuration item
+MySQL DB Configuration
+
+
+## Env
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: envar-demo
+  labels:
+    purpose: demonstrate-envars
+spec:
+  containers:
+  - name: envar-demo-container
+    image: gcr.io/google-samples/node-hello:1.0
+    env:
+    - name: DEMO_GREETING
+      value: "Hello from the environment"
+    - name: DEMO_FAREWELL
+      value: "Such a sweet sorrow"
+```
+```bash
+kubectl apply -f https://k8s.io/examples/pods/inject/envars.yaml
+kubectl get pods -l purpose=demonstrate-envars
+
+kubectl exec envar-demo -- printenv
+```
+
+## ConfigMaps
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  # property-like keys; each key maps to a simple value
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+  # file-like keys
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5    
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true  
+```
+```bash
+kubectl describe cm game-demo
+```
+
+Using Env
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod01
+spec:
+  containers:
+    - name: test-container
+      image: k8s.gcr.io/busybox
+      command: [ "/bin/sh", "-c", "env" ]
+      env:
+        - name: LIVES
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo
+              key: player_initial_lives
+        - name: FILE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo
+              key: ui_properties_file_name
+  restartPolicy: Never
+```
+
+Using EnvFrom
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod02
+spec:
+  containers:
+    - name: test-container
+      image: k8s.gcr.io/busybox
+      command: [ "/bin/sh", "-c", "env" ]
+      envFrom:
+      - configMapRef:
+          name: game-demo
+  restartPolicy: Never
+```
+
+
+## Secrets
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: kubernetes.io/basic-auth
+stringData:
+  username: admin
+  password: t0p-Secret
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-env-pod
+spec:
+  containers:
+  - name: mycontainer
+    image: redis
+    env:
+      - name: SECRET_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: username
+      - name: SECRET_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: password
+  restartPolicy: Never
+```
+```bash
+kubectl exec -it secret-env-pod env
+```
