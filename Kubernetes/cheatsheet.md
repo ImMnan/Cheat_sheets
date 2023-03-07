@@ -279,6 +279,11 @@ kubectl delete deploy  <name>              # Deletes the deployment
 kubectl label deploy <name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
 ```
 
+
+### Daemonset 
+
+
+
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 ### Resource types
