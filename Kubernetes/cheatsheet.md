@@ -140,7 +140,7 @@ spec:
     - sleep
     - "1000"
 EOF
-
+ 
 # Create a secret with several keys
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
