@@ -16,6 +16,20 @@ Release:
 Revision
 - Is the value from the Helm history command
 
+### Chart Management
+```bash
+helm create [name] #creates a chart directory along with the common files and directories used in a chart.
+helm package [chart-path]  #packages a chart into a versioned chart archive file.
+helm lint [chart] # Run tests to examine a chart and identify possible issues:
+helm show all [chart] #Inspect a chart and list its contents:
+helm show values [chart] #displays the contents of the values.yaml file
+helm pull [chart] #Download/pull chart 
+helm pull [chart] --untar=true # if set to true, will untar the chart after downloading it
+helm pull [chart] --verify  #verify the package before using it
+helm pull [chart] --version <number> # default-latest is used, specify a version constraint for the chart version to use
+helm dependency list [chart] # Display a list of a chart’s dependencies:
+``` 
+
 ### Install and Uninstall Apps
 
 ```bash
@@ -72,4 +86,21 @@ helm status [release]  #This command shows the status of a named release.
 helm status [release] --revision <number> #if set, display the status of the named release with revision
 helm history [release] #historical revisions for a given release.
 helm env # Env prints out all the environment information in use by Helm.
+```
+
+### Download Release Information
+```bash
+helm get all [release] # a human readable collection of information about the notes, hooks, supplied values, and generated manifest file of the given release.
+helm get hooks [release] #This command downloads hooks for a given release. Hooks are formatted in YAML and separated by the YAML '---\n' separator.
+helm get manifest [release] # A manifest is a YAML-encoded representation of the Kubernetes resources that were generated from this release's chart(s). If a chart is dependent on other charts, those resources will also be included in the manifest.
+helm get notes [release] # shows notes provided by the chart of a named release.
+helm get values [release] #downloads a values file for a given release. use -o to format output
+```
+
+### Plugin Management
+```bash
+helm plugin install [path/url1]  #Install plugins
+helm plugin list #View a list of all installed plugins
+helm plugin update [plugin1]  #Update plugins
+helm plugin uninstall [plugin] #Uninstall a plugin
 ```
