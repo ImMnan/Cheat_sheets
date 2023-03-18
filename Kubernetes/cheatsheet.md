@@ -290,8 +290,8 @@ kubectl get ds                        # List all deployment  in the default name
 kubectl get ds -o wide                 # List the deployment in a wide view - [Containers, Images, Selector]
 kubectl get ds <name> -o yaml          # Get a deployment's YAML
 kubectl describe ds <name>             # Describe the deployment details
-kubectl get deploy --show-labels           # Show all labels associated with the deployment
-kubectl get deploy -w                      # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
+kubectl get ds --show-labels           # Show all labels associated with the deployment
+kubectl get ds -w                      # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
 kubectl rollout history deploy/<name>      # View the rollout history of a deployment, --revision to specify revision number
 kubectl rollout history deploy/<name> --revision=2  
 kubectl rollout status deploy/<name>       # Check the status of your rollout.
