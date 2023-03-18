@@ -53,3 +53,23 @@ helm repo index [DIR] # Read the current directory and generate an index file ba
 helm repo index [DIR] --merge # Merge the generated index with an existing index file
 helm search repo [keyword]  # search repositories for a keyword in charts
 helm search hub [keyword]  # search for charts in the Artifact Hub or your own hub instance
+```
+
+### Helm Release monitoring
+```bash
+helm list  # lists all of the releases for a specified namespace, uses current namespace context if namespace not specified
+helm list -all #show all releases without any filter applied, can use -a
+helm list -all-namespaces  #list releases across all namespaces, we can use -A
+helm -l key1=value1,key2=value2  # Selector (label query) to filter on, supports '=', '==', and '!='
+helm list --date # sort by release date
+helm list --deployed #show deployed releases. If no other is specified, this will be automatically enabled
+helm list --pending #  show pending releases
+helm list --failed # show failed releases
+helm list --uninstalled #show uninstalled releases (if 'helm uninstall --keep-history' was used)
+helm list --superseded # show superseded releases
+helm list -o yaml # prints the output in the specified format. Allowed values: table, json, yaml (default table)
+helm status [release]  #This command shows the status of a named release.
+helm status [release] --revision <number> #if set, display the status of the named release with revision
+helm history [release] #historical revisions for a given release.
+helm env # Env prints out all the environment information in use by Helm.
+```
