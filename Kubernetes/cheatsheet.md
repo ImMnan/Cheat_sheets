@@ -220,6 +220,7 @@ kubectl set image pod/<pod_name> *=nginx:latest          # Update all containers
 kubectl annotate pods <pod_name> description='test'      # Update pod <pod_name> with the annotation 'description' and the value as 'test'
 kubectl attach <pod_name>                                # Get output from running pod
 kubectl attach <pod_name> -c <container_name>            # Get output from a container in a running pod
+kubectl expose pod <pod_name> --port=444 --name=frontend # Create a service for a pod valid-pod, which serves on port 444 with the name "frontend"
 ```
 
 -  Delete:
@@ -260,6 +261,7 @@ kubectl rollout undo deploy/<name> --to-revision=2           # Rollback to revis
 kubectl rollout restart deploy/<name>                        # Restart a deployment
 kubectl rollout pause deploy/<name>                          # New updates to the deployment will not have an effect as long as this is paused
 kubectl rollout resume deploy/<name>                         # Resume an already paused deployment
+kubectl expose deploy <name> --type=LoadBalancer --port=80   # Create a service for a deployment, which serves on port 80, type LoadBalancer, type could be  ClusterIP, NodePort, LoadBalancer 
 kubectl annotate deploy <name> description='test'            # Added nnotation, though we recommend adding these in the yaml for deployment.
 kubectl attach deploy/<name>                                 # Get output from the first pod of a deployment
 kubectl set env deploy/<name> env_var=test                   # Update deployment with a new env name 'env_var'='test'
@@ -281,6 +283,54 @@ kubectl label deploy <name> <key1>-        # Remove a label named <key1> if it e
 
 
 ### Daemonset 
+
+- Read:
+```bash
+kubectl get ds                        # List all deployment  in the default namespace
+kubectl get ds -o wide                 # List the deployment in a wide view - [Containers, Images, Selector]
+kubectl get ds <name> -o yaml          # Get a deployment's YAML
+kubectl describe ds <name>             # Describe the deployment details
+kubectl get deploy --show-labels           # Show all labels associated with the deployment
+kubectl get deploy -w                      # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
+kubectl rollout history deploy/<name>      # View the rollout history of a deployment, --revision to specify revision number
+kubectl rollout history deploy/<name> --revision=2  
+kubectl rollout status deploy/<name>       # Check the status of your rollout.
+kubectl set env deploy --all --list        # List the environment variables defined on all deployment
+kubectl set env deploy/<name> --list       # List the environment variables defined on all deployment
+kubectl logs -f deploy/<name> --tail=5:    # Tail the log lines of recent log file to display.
+kubectl logs deploy/name -c nginx
+```
+
+- Create + Update:
+```bash
+kubectl exec deploy/<name> -- <cmd>                          # Run a cmd on the 1st pod of the deployment, 1st container by default is used.
+kubectl exec deploy/<name> -c nginx -- <cmd>                 # Run a cmd on nginx container in the deployment <name>
+kubectl edit deploy <name>                                   # Edit the existing deployment's yaml
+kubectl label deploy/<name> <key>=<value>                    # Update <name> with the label.
+kubectl label --overwrite deploy/<name> <key>=<value2>       # Update <name> with the label, overwriting any existing value
+kubectl rollout undo deploy/<name>                           # Rollback to the previous deployment.
+kubectl rollout undo deploy/<name> --to-revision=2           # Rollback to revision 2 of from the  previous deployment history
+kubectl rollout restart deploy/<name>                        # Restart a deployment
+kubectl rollout pause deploy/<name>                          # New updates to the deployment will not have an effect as long as this is paused
+kubectl rollout resume deploy/<name>                         # Resume an already paused deployment
+kubectl annotate deploy <name> description='test'            # Added nnotation, though we recommend adding these in the yaml for deployment.
+kubectl attach deploy/<name>                                 # Get output from the first pod of a deployment
+kubectl set env deploy/<name> env_var=test                   # Update deployment with a new env name 'env_var'='test'
+kubectl set env --from=configmap/<name> deploy/<name>        # Import environment from a configmap 
+kubectl set env --from=secret/<name> deploy/<name>           # Import environment from a secret
+kubectl set image deploy/<name> nginx=nginx:latest           # Set a deployment's nginx container image to 'nginx:latest'
+kubectl set image deploy/<name> *=nginx:1.14.2               # Update image of all containers of deployment to 'nginx:1.14.2'
+kubectl set resources deploy/<name> -c nginx --limits=cpu=250m,memory=512Mi   # Set a deployments nginx container cpu limits to "200m" and memory to "512Mi" 
+kubectl set resources deploy/<name> -c nginx --requests=cpu=250m,memory=512Mi # Set a deployments nginx container cpu requests to "200m" and memory to "512Mi" 
+kubectl scale --replicas=3 deploy/<name>                                      # Scale a replica set to 3, can scal̥le up or down
+kubectl autoscale deploy/<name> --min=2 --max=5 --cpu-percent=50              # Auto scalling - though we recommend creating a yaml for autoscaling.
+```
+
+-  Delete:
+```bash
+kubectl delete ds  <ds_name>              # Deletes the deployment
+kubectl label ds <ds_name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
+```
 
 
 
