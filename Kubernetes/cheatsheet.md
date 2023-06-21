@@ -330,6 +330,54 @@ kubectl delete ds  <ds_name>              # Deletes the deployment
 kubectl label ds <ds_name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
 ```
 
+### Jobs
+
+- Read:
+```bash
+kubectl get ds                         # List all deployment  in the default namespace
+kubectl get ds -o wide                 # List the deployment in a wide view - [Containers, Images, Selector]
+kubectl get ds <name> -o yaml          # Get a deployment's YAML
+kubectl describe ds <name>             # Describe the deployment details
+kubectl get ds --show-labels           # Show all labels associated with the deployment
+kubectl get ds -w                      # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
+kubectl rollout history ds/<name>      # View the rollout history of a deployment, --revision to specify revision number
+kubectl rollout history ds/<name> --revision=2  
+kubectl rollout status ds/<name>       # Check the status of your rollout.
+kubectl set env ds --all --list        # List the environment variables defined on all deployment
+kubectl set env ds/<name> --list       # List the environment variables defined on all deployment
+kubectl logs -f ds/<name> --tail=5:    # Tail the log lines of recent log file to display.
+kubectl logs ds/name -c nginx          # Logs for a specific container in the ds
+```
+
+- Create + Update:
+```bash
+kubectl exec ds/<name> -- <cmd>                          # Run a cmd on the 1st pod of the deployment, 1st container by default is used.
+kubectl exec ds/<name> -c nginx -- <cmd>                 # Run a cmd on nginx container in the deployment <name>
+kubectl edit ds <name>                                   # Edit the existing deployment's yaml
+kubectl label ds/<name> <key>=<value>                    # Update <name> with the label.
+kubectl label --overwrite ds/<name> <key>=<value2>       # Update <name> with the label, overwriting any existing value
+kubectl rollout undo ds/<name>                           # Rollback to the previous deployment.
+kubectl rollout undo ds/<name> --to-revision=2           # Rollback to revision 2 of from the  previous deployment history
+kubectl rollout restart ds/<name>                        # Restart a daemonset
+kubectl rollout pause ds/<name>                          # New updates to the deployment will not have an effect as long as this is paused
+kubectl rollout resume ds/<name>                         # Resume an already paused deployment
+kubectl annotate ds <name> description='test'            # Added nnotation, though we recommend adding these in the yaml for deployment.
+kubectl attach ds/<name>                                 # Get output from the first pod of a deployment
+kubectl set env ds/<name> env_var=test                   # Update deployment with a new env name 'env_var'='test'
+kubectl set env --from=configmap/<name> ds/<name>        # Import environment from a configmap 
+kubectl set env --from=secret/<name> ds/<name>           # Import environment from a secret
+kubectl set image ds/<name> nginx=nginx:latest           # Set a deployment's nginx container image to 'nginx:latest'
+kubectl set image ds/<name> *=nginx:1.14.2               # Update image of all containers of deployment to 'nginx:1.14.2'
+kubectl set resources ds/<name> -c nginx --limits=cpu=250m,memory=512Mi   # Set a deployments nginx container cpu limits to "200m" and memory to "512Mi" 
+kubectl set resources ds/<name> -c nginx --requests=cpu=250m,memory=512Mi # Set a deployments nginx container cpu requests to "200m" and memory to "512Mi" 
+```
+
+-  Delete:
+```bash
+kubectl delete ds  <ds_name>              # Deletes the deployment
+kubectl label ds <ds_name> <key1>-        # Remove a label named <key1> if it exists. *No overwrite option needed.
+```
+
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------
