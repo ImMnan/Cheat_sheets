@@ -286,13 +286,13 @@ kubectl label deploy <name> <key1>-        # Remove a label named <key1> if it e
 
 - Read:
 ```bash
-kubectl get ds                         # List all deployment  in the default namespace
-kubectl get ds -o wide                 # List the deployment in a wide view - [Containers, Images, Selector]
-kubectl get ds <name> -o yaml          # Get a deployment's YAML
-kubectl describe ds <name>             # Describe the deployment details
-kubectl get ds --show-labels           # Show all labels associated with the deployment
-kubectl get ds -w                      # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
-kubectl rollout history ds/<name>      # View the rollout history of a deployment, --revision to specify revision number
+kubectl get ds                         # List all Daemonset in the default namespace
+kubectl get ds -o wide                 # List the daemonset in a wide view - [Containers, Images, Selector]
+kubectl get ds <name> -o yaml          # Get a daemonset's YAML
+kubectl describe ds <name>             # Describe the daemonset details
+kubectl get ds --show-labels           # Show all labels associated with the daemonset
+kubectl get ds -w                      # watch the all daemonset, we can watch a specific daemonset  with adding daemonset name after 'ds'
+kubectl rollout history ds/<name>      # View the rollout history of a daemonset, --revision to specify revision number
 kubectl rollout history ds/<name> --revision=2  
 kubectl rollout status ds/<name>       # Check the status of your rollout.
 kubectl set env ds --all --list        # List the environment variables defined on all deployment
@@ -334,15 +334,12 @@ kubectl label ds <ds_name> <key1>-        # Remove a label named <key1> if it ex
 
 - Read:
 ```bash
-kubectl get ds                         # List all deployment  in the default namespace
-kubectl get ds -o wide                 # List the deployment in a wide view - [Containers, Images, Selector]
-kubectl get ds <name> -o yaml          # Get a deployment's YAML
-kubectl describe ds <name>             # Describe the deployment details
-kubectl get ds --show-labels           # Show all labels associated with the deployment
-kubectl get ds -w                      # watch the all deployments, we can watch a specific deployment  with adding deployment name after 'deploy'
-kubectl rollout history ds/<name>      # View the rollout history of a deployment, --revision to specify revision number
-kubectl rollout history ds/<name> --revision=2  
-kubectl rollout status ds/<name>       # Check the status of your rollout.
+kubectl get jobs                         # List all Jobs in the default namespace
+kubectl get jobs -o wide                 # List the jobs in a wide view - [Containers, Images, Selector]
+kubectl get jobs <name> -o yaml          # Get a job's YAML
+kubectl describe jobs <name>             # Describe the job details
+kubectl get jobs --show-labels           # Show all labels associated with the job
+kubectl get jobs -w                      # watch the all jobs, we can watch a specific deployment  with adding deployment name after 'deploy'
 kubectl set env ds --all --list        # List the environment variables defined on all deployment
 kubectl set env ds/<name> --list       # List the environment variables defined on all deployment
 kubectl logs -f ds/<name> --tail=5:    # Tail the log lines of recent log file to display.
