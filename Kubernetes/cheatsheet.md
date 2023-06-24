@@ -298,7 +298,6 @@ kubectl rollout status ds/<name>       # Check the status of your rollout.
 kubectl set env ds --all --list        # List the environment variables defined on all deployment
 kubectl set env ds/<name> --list       # List the environment variables defined on all deployment
 kubectl logs -f ds/<name> --tail=5:    # Tail the log lines of recent log file to display.
-kubectl logs ds/name -c nginx          # Logs for a specific container in the ds
 ```
 
 - Create + Update:
@@ -339,11 +338,10 @@ kubectl get jobs -o wide                 # List the jobs in a wide view - [Conta
 kubectl get jobs <name> -o yaml          # Get a job's YAML
 kubectl describe jobs <name>             # Describe the job details
 kubectl get jobs --show-labels           # Show all labels associated with the job
-kubectl get jobs -w                      # watch the all jobs, we can watch a specific deployment  with adding deployment name after 'deploy'
-kubectl set env ds --all --list        # List the environment variables defined on all deployment
-kubectl set env ds/<name> --list       # List the environment variables defined on all deployment
+kubectl get jobs -w                      # watch the all jobs, we can watch a specific deployment  with adding job name after 'jobs'
+kubectl set env ds --all --list        # List the environment variables defined on all jobs
+kubectl set env ds/<name> --list       # List the environment variables defined on all job
 kubectl logs -f ds/<name> --tail=5:    # Tail the log lines of recent log file to display.
-kubectl logs ds/name -c nginx          # Logs for a specific container in the ds
 ```
 
 - Create + Update:
