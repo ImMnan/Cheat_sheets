@@ -17,6 +17,10 @@ This page contains a list of commonly used `kubectl` cmds and flags.
 
 <!-- body -->
 
+## Best way to start is by:
+```
+https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
+```
 ## Kubectl autocomplete
 
 ### BASH
