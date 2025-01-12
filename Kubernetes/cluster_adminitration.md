@@ -41,12 +41,16 @@ users:
     client-key-data: REDACTED
 ```
 
-To know more:
+- To know more:
 ```
 kubectl config --help
 ```
+- To get information about current context:
+```
+kubectl config current-context
+```
 
-To switch the context or the cluster:
+- To switch the context or the cluster:
 ```
 kubectl config use-context kubernetes-admin@kubernetes
 ```
@@ -79,10 +83,14 @@ kubectl get pods -n kube-system
 ```
 - Look into /etc/kubernetes/ - Config, manifests & pki/certs
 
-For example to look for manifests file, any changes to manifests will take effect immediately.
+### For example to look for manifests file, any changes to manifests will take effect immediately. (This is in control plane)
+
 ```
-ls /etc/kubernetes/manifests/
+ls /etc/kubernetes/manifests/ #manifests for all kube-system resources
+la /etc/kubernetes/pki/  #this is for certificates
 ```
+Check different files with cat to see different configurations. 
+ 
 
 - Get a detailed list of the specified resources in a namespace - 
 ```
@@ -100,9 +108,9 @@ kubectl delete node worker-node1.example.com
 kubectl get nodes
 ```
 
-Create a new file with Node info,
+### Create a new file with Node info,
 
-```
+``` 
 vi nodereg.json 
 ```
 
@@ -139,7 +147,7 @@ kubectl exec -it nginxpod /bin/sh
 
 ## Working with Kubeadm
 
-Viewing the configuration details
+- Viewing the configuration details
 ```
 kubeadm config print init-defaults
 ```
